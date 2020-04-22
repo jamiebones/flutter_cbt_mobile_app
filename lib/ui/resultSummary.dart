@@ -22,11 +22,11 @@ class ResultSumary extends StatelessWidget {
           children: <Widget>[
             Center(
                 child: Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.only(top: 18.0),
               child: Text(
                 "Score: $score/${result.length}",
                 style: TextStyle(
-                    fontSize: 15,
+                    fontSize: 18,
                     fontWeight: FontWeight.bold,
                     color: primaryColorDark),
               ),
@@ -50,7 +50,8 @@ class ResultSumary extends StatelessWidget {
                           children: <Widget>[
                             Padding(
                               padding: const EdgeInsets.all(8.0),
-                              child: Text(("${(result[index].questionNumber + 1).toString()}.${result[index].question}")),
+                              child: Text(
+                                  ("${(result[index].questionNumber + 1).toString()}.git ${result[index].question}")),
                             ),
                             Padding(
                               padding: const EdgeInsets.all(8.0),
@@ -62,14 +63,23 @@ class ResultSumary extends StatelessWidget {
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: <Widget>[
-                                  Text(
-                                      "your answer: ${result[index].selectedAnswer}"),
+                                  Flexible(
+                                    flex: 5,
+                                    child: Text(
+                                        "your answer: ${result[index].selectedAnswer}"),
+                                  ),
                                   result[index].isCorrect
-                                      ? Icon(FontAwesomeIcons.check,
-                                          color: Colors.green)
-                                      : Icon(
-                                          FontAwesomeIcons.asterisk,
-                                          color: Colors.red,
+                                      ? Flexible(
+                                          flex: 1,
+                                          child: Icon(FontAwesomeIcons.check,
+                                              color: Colors.green),
+                                        )
+                                      : Flexible(
+                                          flex: 1,
+                                          child: Icon(
+                                            FontAwesomeIcons.asterisk,
+                                            color: Colors.red,
+                                          ),
                                         )
                                 ],
                               ),

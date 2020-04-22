@@ -43,7 +43,7 @@ class _SubjectPanelState extends State<SubjectPanel> {
                       padding: const EdgeInsets.all(10.0),
                       child: Center(
                           child: Text(
-                        "${subjects[index].name.toUpperCase()} $loading",
+                        "${subjects[index].name.toUpperCase()}",
                         style: TextStyle(color: secondaryTextColor),
                       )),
                     ),
@@ -78,13 +78,15 @@ void _onLoading(BuildContext context) {
     barrierDismissible: false,
     builder: (BuildContext context) {
       return Dialog(
-        child: new Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            new CircularProgressIndicator(),
-            new Text("Loading"),
-          ],
-        ),
+        child: Container(
+            height: 200,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Center(child: Text("Loading")),
+                Center(child: CircularProgressIndicator()),
+              ],
+            )),
       );
     },
   );

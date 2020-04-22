@@ -290,7 +290,7 @@ class _ShowQuestionState extends State<ShowQuestion> {
         return AlertDialog(
           title: Center(child: Text("Are you sure?")),
           content: Container(
-            height: 80,
+            height: 70,
             child: Center(child: Text("Please confirm submission")),
           ),
           actions: <Widget>[
