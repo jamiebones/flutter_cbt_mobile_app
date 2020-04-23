@@ -8,3 +8,4 @@ const secondaryColor = Color(0xFFfff176);
 const secondaryColorLight = Color(0xFFffffa8);
 const secondaryColorDark = Color(0xFFcabf45);
 const secondaryTextColor = Color(0xff000000);
+const blackColor = Color(0xff000000);
