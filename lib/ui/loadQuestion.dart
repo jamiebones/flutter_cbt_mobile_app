@@ -1,11 +1,11 @@
-import 'dart:developer';
-
 import 'package:cbt_app/model/answeredQuestion.dart';
 import 'package:cbt_app/model/question.dart';
+import 'package:cbt_app/redux/store.dart';
 import 'package:cbt_app/ui/answerdQuestion.dart';
 import 'package:cbt_app/ui/resultSummary.dart';
 import 'package:cbt_app/util/colors.dart';
 import "package:flutter/material.dart";
+import 'package:flutter_redux/flutter_redux.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class LoadQuestion extends StatelessWidget {
@@ -59,116 +59,144 @@ class _ShowQuestionState extends State<ShowQuestion> {
     print(selectedAnswers);
     return Column(
       children: <Widget>[
-        AnsweredQuestion(
-          questionAnswered: selectedAnswers,
-          //! this is a call back function sending a value from
-          //! the child to the parent
-          setQuestionNumber: (int val) {
-            setState(() {
-              questionNumber = val;
-              _groupValue = selectedAnswers[questionNumber];
-            });
+        //we are loading here
+        StoreConnector<AppState, bool>(
+          distinct: true,
+          converter: (store) => store.state.questionsState.isLoading,
+          builder: (context, isLoading) {
+            if (isLoading) {
+              return CircularProgressIndicator();
+            } else {
+              return SizedBox.shrink();
+            }
           },
         ),
-        //return roll here
 
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.only(left: 8.0),
-              child: Text(
-                (1 + questionNumber).toString(),
-                style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
-              ),
-            ),
-            Expanded(
-                child: Padding(
-              padding: const EdgeInsets.only(bottom: 18.0, left: 10.0),
-              child: Text(
-                "${widget.data[questionNumber].question}",
-                style: TextStyle(fontSize: 20.0),
-              ),
-            )),
-          ],
-        ),
+        //we have an error here
 
-        _myRadioButton(
-            value: 0,
-            title: widget.data[questionNumber].option.a,
-            onChanged: (val) {
-              setState(() {
-                selectedAnswers[questionNumber] = val;
-                _groupValue = val;
-                //check if the person has already answered that question
-              });
-            }),
+       
 
-        _myRadioButton(
-            value: 1,
-            title: widget.data[questionNumber].option.b,
-            onChanged: (val) {
-              setState(() {
-                selectedAnswers[questionNumber] = val;
-                _groupValue = val;
-              });
-            }),
-
-        _myRadioButton(
-            value: 2,
-            title: widget.data[questionNumber].option.c,
-            onChanged: (val) {
-              setState(() {
-                selectedAnswers[questionNumber] = val;
-                _groupValue = val;
-              });
-            }),
-        _myRadioButton(
-            value: 3,
-            title: widget.data[questionNumber].option.d,
-            onChanged: (val) {
-              setState(() {
-                selectedAnswers[questionNumber] = val;
-                _groupValue = val;
-              });
-            }),
-
-        Divider(
-          height: 5,
-          color: Colors.black,
-        ),
-
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            RaisedButton(
-              onPressed: () {
-                setState(() {
-                  if (questionNumber > 0) {
-                    questionNumber = (questionNumber - 1);
-                    _groupValue = selectedAnswers[questionNumber];
-                  }
-                });
-              },
-              child: Icon(FontAwesomeIcons.backward),
-            ),
-            RaisedButton(
-              onPressed: _confirmSubmit,
-              child: Text("Submit"),
-            ),
-            RaisedButton(
-                onPressed: () {
-                  setState(() {
-                    //increament question number here.
-                    if (questionNumber + 1 < widget.data.length) {
-                      questionNumber = (questionNumber + 1);
+        StoreConnector<AppState, List<Data>>(
+          distinct: true,
+          converter: (store) => store.state.questionsState.questions,
+          builder: (context, questions) {
+            return Column(
+              children: <Widget>[
+                AnsweredQuestion(
+                  questionAnswered: selectedAnswers,
+                  //! this is a call back function sending a value from
+                  //! the child to the parent
+                  setQuestionNumber: (int val) {
+                    setState(() {
+                      questionNumber = val;
                       _groupValue = selectedAnswers[questionNumber];
-                    }
-                  });
-                },
-                child: Icon(FontAwesomeIcons.forward)),
-          ],
+                    });
+                  },
+                ),
+                //return roll here
+
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.only(left: 8.0),
+                      child: Text(
+                        (1 + questionNumber).toString(),
+                        style: TextStyle(
+                            fontSize: 20.0, fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                    Expanded(
+                        child: Padding(
+                      padding: const EdgeInsets.only(bottom: 18.0, left: 10.0),
+                      child: Text(
+                        "${questions[0].question}",
+                        style: TextStyle(fontSize: 20.0),
+                      ),
+                    )),
+                  ],
+                ),
+
+                _myRadioButton(
+                    value: 0,
+                    title: widget.data[questionNumber].option.a,
+                    onChanged: (val) {
+                      setState(() {
+                        selectedAnswers[questionNumber] = val;
+                        _groupValue = val;
+                        //check if the person has already answered that question
+                      });
+                    }),
+
+                _myRadioButton(
+                    value: 1,
+                    title: widget.data[questionNumber].option.b,
+                    onChanged: (val) {
+                      setState(() {
+                        selectedAnswers[questionNumber] = val;
+                        _groupValue = val;
+                      });
+                    }),
+
+                _myRadioButton(
+                    value: 2,
+                    title: widget.data[questionNumber].option.c,
+                    onChanged: (val) {
+                      setState(() {
+                        selectedAnswers[questionNumber] = val;
+                        _groupValue = val;
+                      });
+                    }),
+                _myRadioButton(
+                    value: 3,
+                    title: widget.data[questionNumber].option.d,
+                    onChanged: (val) {
+                      setState(() {
+                        selectedAnswers[questionNumber] = val;
+                        _groupValue = val;
+                      });
+                    }),
+
+                Divider(
+                  height: 5,
+                  color: Colors.black,
+                ),
+
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    RaisedButton(
+                      onPressed: () {
+                        setState(() {
+                          if (questionNumber > 0) {
+                            questionNumber = (questionNumber - 1);
+                            _groupValue = selectedAnswers[questionNumber];
+                          }
+                        });
+                      },
+                      child: Icon(FontAwesomeIcons.backward),
+                    ),
+                    RaisedButton(
+                      onPressed: _confirmSubmit,
+                      child: Text("Submit"),
+                    ),
+                    RaisedButton(
+                        onPressed: () {
+                          setState(() {
+                            //increament question number here.
+                            if (questionNumber + 1 < widget.data.length) {
+                              questionNumber = (questionNumber + 1);
+                              _groupValue = selectedAnswers[questionNumber];
+                            }
+                          });
+                        },
+                        child: Icon(FontAwesomeIcons.forward)),
+                  ],
+                ),
+              ],
+            );
+          },
         ),
       ],
     );

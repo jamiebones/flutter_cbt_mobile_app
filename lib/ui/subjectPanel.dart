@@ -1,9 +1,11 @@
-import 'package:cbt_app/model/question.dart';
+
 import 'package:cbt_app/model/subject.dart';
-import 'package:cbt_app/network/network.dart';
-import 'package:cbt_app/ui/loadQuestion.dart';
+import 'package:cbt_app/redux/questions/question_action.dart';
+import 'package:cbt_app/redux/store.dart';
+import 'package:cbt_app/ui/loadQuestionRedux.dart';
 import 'package:cbt_app/util/colors.dart';
 import "package:flutter/material.dart";
+
 
 class SubjectPanel extends StatefulWidget {
   @override
@@ -11,9 +13,11 @@ class SubjectPanel extends StatefulWidget {
 }
 
 class _SubjectPanelState extends State<SubjectPanel> {
-  Future<Question> questionobject;
   String subjectName;
-  bool loading = false;
+
+  void _fetchQuestionsFromDb(subject) {
+    Redux.store.dispatch(fetchQuestionsAction(Redux.store, subjectName));
+  }
 
   @override
   void initState() {
@@ -35,7 +39,7 @@ class _SubjectPanelState extends State<SubjectPanel> {
                   padding: const EdgeInsets.all(8.0),
                   child: Container(
                     height: 60,
-                    width: 200,
+                    width: MediaQuery.of(context).size.width,
                     decoration: BoxDecoration(
                       color: secondaryColorDark,
                     ),
@@ -49,27 +53,21 @@ class _SubjectPanelState extends State<SubjectPanel> {
                     ),
                   ),
                 ),
-                onTap: () async {
-                  _onLoading(context);
+                onTap: () {
+                  //_onLoading(context);
                   subjectName = subjects[index].name;
-                  var result = await getQuestion(subjectName: subjectName);
-                  Navigator.of(context).pop();
+                  _fetchQuestionsFromDb(subjectName);
+                  //var result = await getQuestion(subjectName: subjectName);
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => LoadQuestion(
-                                questions: result.data,
-                                subject: subjects[index].name,
-                              )));
+                          builder: (context) => LoadQuestionRedux()));
                 },
               ),
             );
           }),
     );
   }
-
-  Future<Question> getQuestion({String subjectName}) =>
-      new Network().getQuestions(subjectName: subjectName);
 }
 
 void _onLoading(BuildContext context) {
@@ -82,10 +80,7 @@ void _onLoading(BuildContext context) {
             height: 200,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Center(child: Text("Loading")),
-                Center(child: CircularProgressIndicator()),
-              ],
+              children: <Widget>[CircularProgressIndicator()],
             )),
       );
     },

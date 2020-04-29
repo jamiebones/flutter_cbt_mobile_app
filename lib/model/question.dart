@@ -25,6 +25,12 @@ class Question {
     }
     return data;
   }
+
+  static List<Question> listFromJson(List<dynamic> json) {
+    return json == null
+        ? List<Question>()
+        : json.map((value) => Question.fromJson(value)).toList();
+  }
 }
 
 class Data {
